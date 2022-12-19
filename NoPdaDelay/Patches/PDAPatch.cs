@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace PDAInstaClose.Patches
+namespace NoPdaDelay.Patches
 {
-    [HarmonyPatch(typeof(PDA), "Open")]
+    [HarmonyPatch(typeof(PDA))]
     public static class PDAOpenPatch
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch("Open")]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> OpenTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             return new CodeMatcher(instructions)
                 .MatchForward(false,
@@ -17,12 +19,10 @@ namespace PDAInstaClose.Patches
                 .SetOperandAndAdvance(0.0f)
                 .InstructionEnumeration();
         }
-    }
 
-    [HarmonyPatch(typeof(PDA), "Close")]
-    public static class PDAClosePatch
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch("Close")]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> CloseTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             return new CodeMatcher(instructions)
                 .MatchForward(false,
