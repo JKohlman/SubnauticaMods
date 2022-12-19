@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -16,7 +17,9 @@ namespace NoPdaDelay.Patches
                 .MatchForward(false,
                     new CodeMatch(i => i.opcode == OpCodes.Ldfld && ((FieldInfo)i.operand).Name == "sequence"))
                 .Advance(1)
-                .SetOperandAndAdvance(0.0f)
+                .SetInstruction(
+                    Transpilers.EmitDelegate<Func<float>>(() => NoPdaDelay.CfgOpenDelay.Value)
+                )
                 .InstructionEnumeration();
         }
 
@@ -28,7 +31,9 @@ namespace NoPdaDelay.Patches
                 .MatchForward(false,
                     new CodeMatch(i => i.opcode == OpCodes.Ldfld && ((FieldInfo)i.operand).Name == "sequence"))
                 .Advance(1)
-                .SetOperandAndAdvance(0.0f)
+                .SetInstruction(
+                    Transpilers.EmitDelegate<Func<float>>(() => NoPdaDelay.CfgCloseDelay.Value)
+                )
                 .InstructionEnumeration();
         }
     }
