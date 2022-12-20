@@ -40,16 +40,42 @@ namespace MoreQuickSlotsBepInEx
                 "General", 
                 "Extra Slots", 
                 4, 
-                new ConfigDescription("How many extra slots to add", new AcceptableValueRange<int>(0, MAX_EXTRA_SLOTS))
+                new ConfigDescription(
+                    "How many extra slots to add", 
+                    new AcceptableValueRange<int>(0, MAX_EXTRA_SLOTS)
+                )
             );
             for (int i = 0; i < MAX_EXTRA_SLOTS; i++)
             {
                 CfgSlotHotkeys.Add(Config.Bind(
                     "Hotkeys",
-                    "Quickslot " + (i+6).ToString() + " Hotkey",
+                    "Quickslot " + (i + 6).ToString() + " Hotkey",
                     new KeyboardShortcut(defaultHotkeys[i]),
-                    "Hotkey for quickslot " + (i + 6).ToString()
+                    new ConfigDescription(
+                        "Hotkey for quickslot " + (i + 6).ToString(), 
+                        null,
+                        new ConfigurationManagerAttributes { Order = 6 - i }
+                    )
                 ));
+            }
+        }
+
+        private void Update()
+        {
+            pollHotkeys();
+        }
+
+        private static void pollHotkeys()
+        {
+            if (Inventory.main == null)
+                return;
+
+            for (int i = 0; i < MAX_EXTRA_SLOTS; i++)
+            {
+                if (CfgSlotHotkeys[i].Value.IsDown())
+                {
+                    Inventory.main.quickSlots.SlotKeyDown(i + 5);
+                }
             }
         }
     }
