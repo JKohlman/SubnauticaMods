@@ -10,7 +10,7 @@ namespace MoreQuickSlotsBepInEx.Patches
         static void Postfix()
         {
             string highNum = ((5 + MoreQuickSlotsBepInEx.CfgExtraSlots.Value) % 10).ToString();
-            typeof(TooltipFactory).GetField("stringKeyRange15", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, "1-"+highNum);
+            TooltipFactory.stringKeyRange15 = "1-"+highNum;
         }
     }
 }
