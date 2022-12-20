@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="0Harmony">
+            <HintPath>$(SubnauticaPath)\BepInEx\core\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\publicized_assemblies\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx">
+            <HintPath>$(SubnauticaPath)\BepInEx\core\BepInEx.dll</HintPath>
+        </Reference>
+        <Reference Include="HarmonyXInterop">
+          <HintPath>C:\Games\Subnautica\BepInEx\core\HarmonyXInterop.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="PlatformInputDefault">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\PlatformInputDefault.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <Target Name="Copy" AfterTargets="Build" Condition="'$(SubnauticaPath)' != ''">
+        <Message Importance="high" Text="Copying output to $(SubnauticaPath)\BepInEx\plugins\$(TargetFileName)" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SubnauticaPath)/BepInEx/plugins/" UseSymboliclinksIfPossible="true"></Copy>
+    </Target>
+
+</Project>
