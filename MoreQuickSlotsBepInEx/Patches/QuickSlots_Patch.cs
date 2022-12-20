@@ -10,7 +10,8 @@ namespace MoreQuickSlotsBepInEx.Patches
     {
         [HarmonyPatch(MethodType.Constructor)]
         [HarmonyPatch(new Type[] { typeof(GameObject), typeof(Transform), typeof(Transform), typeof(Inventory), typeof(Transform), typeof(int) })]
-        static void Prefix(ref int slotCount)
+        [HarmonyPrefix]
+        static void Ctor_Prefix(ref int slotCount)
         {
             slotCount += MoreQuickSlotsBepInEx.CfgExtraSlots.Value;
 
@@ -18,6 +19,18 @@ namespace MoreQuickSlotsBepInEx.Patches
             for (int i = 0; i < slotCount; i++) { mySlotNames[i] = "QuickSlot" + i.ToString(); }
 
             typeof(QuickSlots).GetField("slotNames", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, mySlotNames);
+        }
+
+        [HarmonyPatch("BindToEmpty")]
+        [HarmonyPrefix]
+        static bool BindToEmpty_Prefix(ref int __result)
+        {
+            if (MoreQuickSlotsBepInEx.CfgDAATQS.Value)
+            {
+                __result = -1;
+                return false;
+            }
+            return true;
         }
 
         public static void ReDrawSlots()

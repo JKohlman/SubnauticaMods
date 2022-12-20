@@ -25,6 +25,7 @@ namespace MoreQuickSlotsBepInEx
 
         private readonly KeyCode[] defaultHotkeys = { KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, };
 
+        public static ConfigEntry<bool> CfgDAATQS;
         public static ConfigEntry<int> CfgExtraSlots;
         public static List<ConfigEntry<KeyboardShortcut>> CfgSlotHotkeys = new List<ConfigEntry<KeyboardShortcut>>();
 
@@ -35,8 +36,20 @@ namespace MoreQuickSlotsBepInEx
             harmony.PatchAll();
         }
 
+        private void Update()
+        {
+            pollHotkeys();
+        }
+
+
         private void createConfig()
         {
+            CfgDAATQS = Config.Bind(
+                "General",
+                "Disable Auto-Bind",
+                false,
+                "Disable automatically adding picked up items to quickslots"
+            );
             CfgExtraSlots = Config.Bind(
                 "General", 
                 "Extra Slots", 
@@ -60,11 +73,6 @@ namespace MoreQuickSlotsBepInEx
                     )
                 ));
             }
-        }
-
-        private void Update()
-        {
-            pollHotkeys();
         }
 
         private static void pollHotkeys()
