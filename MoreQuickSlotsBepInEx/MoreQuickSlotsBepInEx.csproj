@@ -4,6 +4,7 @@
         <TargetFramework>net472</TargetFramework>
         <SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
