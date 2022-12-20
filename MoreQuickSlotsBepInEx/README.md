@@ -15,4 +15,10 @@ Add more quick slots to Subnautica!
 1. Adjust `<SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>` in `MoreQuickSlotsBepInEx.csproj` to reflect your Subnautica installation folder
 2. Build
 
+# Credits
 
+Inspiration from:
+
+- Idea from: https://www.nexusmods.com/subnautica/mods/14
+- How to dynamically change QS count in game: https://github.com/celvro/QuickSlotsPlus 
+- DAATQS Name and Idea https://github.com/desperationfighter/Desperationfighter-SubnauticaMods/tree/master/DAATQS
