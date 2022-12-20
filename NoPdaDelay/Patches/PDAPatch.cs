@@ -9,7 +9,7 @@ namespace NoPdaDelay.Patches
     [HarmonyPatch(typeof(PDA))]
     public static class PDAOpenPatch
     {
-        [HarmonyPatch("Open")]
+        [HarmonyPatch(nameof(PDA.Open))]
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> OpenTranspiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -23,7 +23,7 @@ namespace NoPdaDelay.Patches
                 .InstructionEnumeration();
         }
 
-        [HarmonyPatch("Close")]
+        [HarmonyPatch(nameof(PDA.Close))]
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> CloseTranspiler(IEnumerable<CodeInstruction> instructions)
         {

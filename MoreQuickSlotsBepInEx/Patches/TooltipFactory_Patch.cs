@@ -6,7 +6,7 @@ namespace MoreQuickSlotsBepInEx.Patches
     [HarmonyPatch(typeof(TooltipFactory))]
     internal class TooltipFactory_Patch
     {
-        [HarmonyPatch("RefreshActionStrings")]
+        [HarmonyPatch(nameof(TooltipFactory.RefreshActionStrings))]
         static void Postfix()
         {
             int highSlot = 5 + MoreQuickSlotsBepInEx.CfgExtraSlots.Value;

@@ -21,7 +21,7 @@ namespace MoreQuickSlotsBepInEx.Patches
             typeof(QuickSlots).GetField("slotNames", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, mySlotNames);
         }
 
-        [HarmonyPatch("BindToEmpty")]
+        [HarmonyPatch(nameof(QuickSlots.BindToEmpty))]
         [HarmonyPrefix]
         static bool BindToEmpty_Prefix(ref int __result)
         {
