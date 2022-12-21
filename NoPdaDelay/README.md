@@ -14,5 +14,3 @@ Cuts down on the weird mouse delay/recoil when opening and closing a PDA in Subn
 # Build Instructions
 1. Adjust `<SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>` in `NoPdaDelay.csproj` to reflect your Subnautica installation folder
 2. Build
-
-

@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
         <SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
