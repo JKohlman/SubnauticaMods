@@ -15,7 +15,7 @@ namespace MoreQuickSlotsBepInEx
     {
         private const string myGUID = "com.essence.MoreQuickSlotsBepInEx";
         private const string pluginName = "More Quick Slots (BepInEx)";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.1.0";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
