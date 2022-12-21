@@ -11,7 +11,7 @@ namespace NoPdaDelay
     {
         private const string myGUID = "com.essence.NoPdaDelay";
         private const string pluginName = "No PDA Delay";
-        private const string versionString = "1.0.0";
+        private const string versionString = "1.1.0";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
 
