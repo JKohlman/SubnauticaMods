@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using MoreQuickSlotsBepInEx.Patches;
+using Platform.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,7 +83,7 @@ namespace MoreQuickSlotsBepInEx
 
             for (int i = 0; i < CfgExtraSlots.Value; i++)
             {
-                if (CfgSlotHotkeys[i].Value.IsDown())
+                if (Input.GetKeyDown(CfgSlotHotkeys[i].Value.MainKey))
                 {
                     Inventory.main.quickSlots.SlotKeyDown(i + 5);
                 }
