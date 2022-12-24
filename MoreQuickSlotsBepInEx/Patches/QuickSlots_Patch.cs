@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using MoreQuickSlotsBepInEx.Config;
 using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace MoreQuickSlotsBepInEx.Patches
@@ -13,19 +13,14 @@ namespace MoreQuickSlotsBepInEx.Patches
         [HarmonyPrefix]
         static void Ctor_Prefix(ref int slotCount)
         {
-            slotCount += MoreQuickSlotsBepInEx.CfgExtraSlots.Value;
-
-            string[] mySlotNames = new string[slotCount];
-            for (int i = 0; i < slotCount; i++) { mySlotNames[i] = "QuickSlot" + i.ToString(); }
-
-            typeof(QuickSlots).GetField("slotNames", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, mySlotNames);
+            slotCount += PluginConfig.ExtraSlots.Value;
         }
 
         [HarmonyPatch(nameof(QuickSlots.BindToEmpty))]
         [HarmonyPrefix]
         static bool BindToEmpty_Prefix(ref int __result)
         {
-            if (MoreQuickSlotsBepInEx.CfgDAATQS.Value)
+            if (PluginConfig.DAATQS.Value)
             {
                 __result = -1;
                 return false;
@@ -33,7 +28,15 @@ namespace MoreQuickSlotsBepInEx.Patches
             return true;
         }
 
-        public static void ReDrawSlots()
+        internal static void SetupSlotNames()
+        {
+            string[] mySlotNames = new string[PluginConfig.MAX_EXTRA_SLOTS + QuickSlots.slotNames.Length];
+            for (int i = 0; i < mySlotNames.Length; i++) { mySlotNames[i] = "QuickSlot" + i.ToString(); }
+
+            Traverse.Create<QuickSlots>().Field("slotNames").SetValue(mySlotNames);
+        }
+
+        internal static void ReDrawSlots()
         {
             Inventory inv = Inventory.main;
             if (inv == null)

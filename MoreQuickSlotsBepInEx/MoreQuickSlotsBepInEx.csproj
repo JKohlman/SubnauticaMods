@@ -4,7 +4,8 @@
         <TargetFramework>net472</TargetFramework>
         <SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
+        <Configurations>Debug;Release;Publish</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
@@ -35,11 +36,30 @@
         <Reference Include="PlatformInputDefault">
             <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\PlatformInputDefault.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(SubnauticaPath)' != ''">
         <Message Importance="high" Text="Copying output to $(SubnauticaPath)\BepInEx\plugins\$(TargetFileName)" />
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SubnauticaPath)/BepInEx/plugins/" UseSymboliclinksIfPossible="true"></Copy>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SubnauticaPath)/BepInEx/plugins/"></Copy>
+        
+    </Target>
+
+    <Target Name="PostBuildPublish" AfterTargets="Build" Condition="'$(SubnauticaPath)' != '' and '$(Configuration)' == 'Publish'">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="output\plugins\$(ProjectName)\"/>
+        <Copy SourceFiles="$(ProjectDir)\README.md" DestinationFolder="output\plugins\$(ProjectName)\"/>
+    </Target>
+
+    <Target Name="PublishZip" AfterTargets="PostBuildPublish" Condition="'$(SubnauticaPath)' != '' and '$(Configuration)' == 'Publish'">
+        <Delete Files="./output/$(ProjectName).zip"/>
+        <Exec Command="7z a ./output/$(ProjectName).zip ./output/*"/>
+    </Target>
+
+    <Target Name="MyClean" AfterTargets="Clean">
+        <Message Importance="high" Text="Cleaning" />
+        <RemoveDir Directories="output" />
     </Target>
 
 </Project>

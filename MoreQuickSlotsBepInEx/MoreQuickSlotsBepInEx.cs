@@ -1,12 +1,8 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using MoreQuickSlotsBepInEx.Config;
 using MoreQuickSlotsBepInEx.Patches;
-using Platform.Utils;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace MoreQuickSlotsBepInEx
 {
@@ -14,26 +10,20 @@ namespace MoreQuickSlotsBepInEx
     [BepInProcess("Subnautica.exe")]
     public class MoreQuickSlotsBepInEx : BaseUnityPlugin
     {
+        #region BEPINEX
         private const string myGUID = "com.essence.MoreQuickSlotsBepInEx";
         private const string pluginName = "More Quick Slots (BepInEx)";
-        private const string versionString = "1.1.0";
+        private const string versionString = "1.2.0";
 
         private static readonly Harmony harmony = new Harmony(myGUID);
-
-        public static ManualLogSource logger;
-
-        public const int MAX_EXTRA_SLOTS = 15;
-
-        private readonly KeyCode[] defaultHotkeys = { KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, };
-
-        public static ConfigEntry<bool> CfgDAATQS;
-        public static ConfigEntry<int> CfgExtraSlots;
-        public static List<ConfigEntry<KeyboardShortcut>> CfgSlotHotkeys = new List<ConfigEntry<KeyboardShortcut>>();
+        internal static ManualLogSource logger;
+        #endregion
 
         public void Awake()
         {
-            createConfig();
+            PluginConfig.Initialize(Config);
             logger = Logger;
+            QuickSlots_Patch.SetupSlotNames(); // Fix those stupid slotnames issues
             harmony.PatchAll();
         }
 
@@ -42,51 +32,15 @@ namespace MoreQuickSlotsBepInEx
             pollHotkeys();
         }
 
-
-        private void createConfig()
-        {
-            CfgDAATQS = Config.Bind(
-                "General",
-                "Disable Auto-Bind",
-                false,
-                "Disable automatically adding picked up items to quickslots"
-            );
-            CfgExtraSlots = Config.Bind(
-                "General", 
-                "Extra Slots", 
-                4, 
-                new ConfigDescription(
-                    "How many extra slots to add", 
-                    new AcceptableValueRange<int>(0, MAX_EXTRA_SLOTS)
-                )
-            );
-            CfgExtraSlots.SettingChanged += (object sender, EventArgs e) => { QuickSlots_Patch.ReDrawSlots(); };
-            for (int i = 0; i < MAX_EXTRA_SLOTS; i++)
-            {
-                CfgSlotHotkeys.Add(Config.Bind(
-                    "Hotkeys",
-                    "Quickslot " + (i + 6).ToString() + " Hotkey",
-                    new KeyboardShortcut((i < defaultHotkeys.Length) ? defaultHotkeys[i] : KeyCode.None),
-                    new ConfigDescription(
-                        "Hotkey for quickslot " + (i + 6).ToString(),
-                        null,
-                        new ConfigurationManagerAttributes { Order = (MAX_EXTRA_SLOTS + 1) - i }
-                    )
-                ));
-            }
-        }
-
         private static void pollHotkeys()
         {
             if (Inventory.main == null)
                 return;
 
-            for (int i = 0; i < CfgExtraSlots.Value; i++)
+            for (int i = 0; i < PluginConfig.ExtraSlots.Value; i++)
             {
-                if (Input.GetKeyDown(CfgSlotHotkeys[i].Value.MainKey))
-                {
+                if (PluginConfig.SlotHotkeys[i].IsDown())
                     Inventory.main.quickSlots.SlotKeyDown(i + 5);
-                }
             }
         }
     }
