@@ -6,7 +6,7 @@ using MoreQuickSlotsBepInEx.Patches;
 
 namespace MoreQuickSlotsBepInEx.Config
 {
-    public static class PluginConfig
+    public static class BepInExConfig
     {
         public static readonly int MAX_EXTRA_SLOTS = 15;
 

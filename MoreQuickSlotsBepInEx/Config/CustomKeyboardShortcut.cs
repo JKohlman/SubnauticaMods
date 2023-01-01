@@ -110,7 +110,7 @@ namespace MoreQuickSlotsBepInEx.Config
 
         }
 
-        readonly private ConfigEntry<AllowedKeys> _MainKey;
+        readonly internal ConfigEntry<AllowedKeys> _MainKey;
         internal KeyCode MainKey => (KeyCode)_MainKey.Value;
 
         readonly private ConfigEntry<string> _Modifiers;

@@ -13,14 +13,14 @@ namespace MoreQuickSlotsBepInEx.Patches
         [HarmonyPrefix]
         static void Ctor_Prefix(ref int slotCount)
         {
-            slotCount += PluginConfig.ExtraSlots.Value;
+            slotCount += BepInExConfig.ExtraSlots.Value;
         }
 
         [HarmonyPatch(nameof(QuickSlots.BindToEmpty))]
         [HarmonyPrefix]
         static bool BindToEmpty_Prefix(ref int __result)
         {
-            if (PluginConfig.DAATQS.Value)
+            if (BepInExConfig.DAATQS.Value)
             {
                 __result = -1;
                 return false;
@@ -30,7 +30,7 @@ namespace MoreQuickSlotsBepInEx.Patches
 
         internal static void SetupSlotNames()
         {
-            string[] mySlotNames = new string[PluginConfig.MAX_EXTRA_SLOTS + QuickSlots.slotNames.Length];
+            string[] mySlotNames = new string[BepInExConfig.MAX_EXTRA_SLOTS + QuickSlots.slotNames.Length];
             for (int i = 0; i < mySlotNames.Length; i++) { mySlotNames[i] = "QuickSlot" + i.ToString(); }
 
             Traverse.Create<QuickSlots>().Field("slotNames").SetValue(mySlotNames);

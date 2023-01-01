@@ -9,7 +9,7 @@ namespace MoreQuickSlotsBepInEx.Patches
         [HarmonyPatch(nameof(TooltipFactory.RefreshActionStrings))]
         static void Postfix()
         {
-            int highSlot = 5 + PluginConfig.ExtraSlots.Value;
+            int highSlot = 5 + BepInExConfig.ExtraSlots.Value;
             TooltipFactory.stringKeyRange15 = "1-" + ((highSlot > 9) ? "9+" : highSlot.ToString());
         }
     }
