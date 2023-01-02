@@ -4,22 +4,26 @@
         <TargetFramework>net472</TargetFramework>
         <SubnauticaPath>C:\Games\Subnautica</SubnauticaPath>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>10.0</LangVersion>
         <Version>1.3.0</Version>
         <Configurations>Debug;Release;Publish</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
+        <!--<Reference Include="SMLHelper">
+            <HintPath>$(SubnauticaPath)\BepInEx\plugins\SMLHelper.dll</HintPath>
+        </Reference>-->
         <Reference Include="SMLHelper">
             <HintPath>$(SubnauticaPath)\BepInEx\plugins\SMLHelper.dll</HintPath>
         </Reference>
-        <Reference Include="Newtonsoft.Json">
-            <HintPath>$(SubnauticaPath)\Subnautica_Data\Managed\Newtonsoft.Json.dll</HintPath>
-        </Reference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.4.21"/>
-        <PackageReference Include="Subnautica.GameLibs" Version="71137.0.0.1-r.0"/>
-        <PackageReference Include="UnityEngine.Modules" Version="2019.4.36"/>
+        <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+        <PackageReference Include="Subnautica.GameLibs" Version="71137.0.0.1-r.0" />
+        <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="lib\" />
     </ItemGroup>
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(SubnauticaPath)' != ''">
@@ -28,13 +32,13 @@
     </Target>
 
     <Target Name="PostBuildPublish" AfterTargets="Build" Condition="'$(SubnauticaPath)' != '' and '$(Configuration)' == 'Publish'">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="output\plugins\$(ProjectName)\"/>
-        <Copy SourceFiles="$(ProjectDir)\README.md" DestinationFolder="output\plugins\$(ProjectName)\"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="output\plugins\$(ProjectName)\" />
+        <Copy SourceFiles="$(ProjectDir)\README.md" DestinationFolder="output\plugins\$(ProjectName)\" />
     </Target>
 
     <Target Name="PublishZip" AfterTargets="PostBuildPublish" Condition="'$(SubnauticaPath)' != '' and '$(Configuration)' == 'Publish'">
-        <Delete Files="./output/$(ProjectName).zip"/>
-        <Exec Command="7z a ./output/$(ProjectName).zip ./output/*"/>
+        <Delete Files="./output/$(ProjectName).zip" />
+        <Exec Command="7z a ./output/$(ProjectName).zip ./output/*" />
     </Target>
 
     <Target Name="MyClean" AfterTargets="Clean">

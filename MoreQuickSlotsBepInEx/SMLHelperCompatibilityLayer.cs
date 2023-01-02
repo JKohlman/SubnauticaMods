@@ -1,5 +1,5 @@
 ﻿using MoreQuickSlotsBepInEx.Config;
-using SMLHelper.V2.Handlers;
+using SMLHelper.Handlers;
 
 namespace MoreQuickSlotsBepInEx
 {
@@ -20,7 +20,7 @@ namespace MoreQuickSlotsBepInEx
 
         private static void SMLPresentInitialize()
         {
-            OptionsPanelHandler.Main.RegisterModOptions(new SMLConfig());
+            OptionsPanelHandler.RegisterModOptions(new SMLConfig());
         }
     }
 }
