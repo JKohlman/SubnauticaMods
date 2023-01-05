@@ -10,19 +10,12 @@ namespace MoreQuickSlotsBepInEx.Config
 {
     public class CustomKeyboardShortcut
     {
-        private class Modifier
-        {
-            public bool Enabled { get; set; } = false;
-            readonly private List<KeyCode> keyCodes = new List<KeyCode>();
-            public IEnumerable<KeyCode> Keys => keyCodes;
-
-            public Modifier(bool enabled = false, params KeyCode[] hotkeys)
-            {
-                Enabled = enabled;
-                foreach (var hotkey in hotkeys)
-                    keyCodes.Add(hotkey);
-            }
-        }
+        readonly private Dictionary<AllowedModifiers, List<KeyCode>> ModifierLookup =
+            new Dictionary<AllowedModifiers, List<KeyCode>> {
+                { AllowedModifiers.Shift, new List<KeyCode>() {KeyCode.LeftShift, KeyCode.RightShift } },
+                { AllowedModifiers.Ctrl, new List<KeyCode>() {KeyCode.LeftControl, KeyCode.RightControl } },
+                { AllowedModifiers.Alt, new List<KeyCode>() {KeyCode.LeftAlt, KeyCode.RightAlt } }
+            };
 
         internal enum AllowedKeys
         {
@@ -112,14 +105,27 @@ namespace MoreQuickSlotsBepInEx.Config
 
         readonly internal ConfigEntry<AllowedKeys> _MainKey;
         internal KeyCode MainKey => (KeyCode)_MainKey.Value;
-
         readonly private ConfigEntry<string> _Modifiers;
-        readonly private Dictionary<AllowedModifiers, Modifier> Modifiers =
-            new Dictionary<AllowedModifiers, Modifier> {
-                { AllowedModifiers.Shift, new Modifier(false, KeyCode.LeftShift, KeyCode.RightShift) },
-                { AllowedModifiers.Ctrl, new Modifier(false, KeyCode.LeftControl, KeyCode.RightControl) },
-                { AllowedModifiers.Alt, new Modifier(false, KeyCode.LeftAlt, KeyCode.RightAlt) }
+        internal string ModifiersString => _Modifiers.Value;
+        readonly private Dictionary<AllowedModifiers, bool> Modifiers =
+            new Dictionary<AllowedModifiers, bool> {
+                { AllowedModifiers.Shift, false },
+                { AllowedModifiers.Ctrl, false },
+                { AllowedModifiers.Alt, false }
             };
+
+        internal Dictionary<AllowedModifiers, bool> GetModifiers { 
+            get {
+                DeserializeModifiers();
+                return Modifiers;
+            } 
+        }
+
+        internal void SetModifier(AllowedModifiers modifier, bool value)
+        {
+            Modifiers[modifier] = value;
+            SerializeModifiers();
+        }
 
         internal CustomKeyboardShortcut(ConfigEntry<AllowedKeys> mainKey, ConfigEntry<string> modifiers)
         {
@@ -131,8 +137,13 @@ namespace MoreQuickSlotsBepInEx.Config
         private void DeserializeModifiers()
         {
             IEnumerable<AllowedModifiers> mods = DeserializeModifiers(_Modifiers.Value);
-            foreach (KeyValuePair<AllowedModifiers, Modifier> mod in Modifiers)
-                mod.Value.Enabled = mods.Contains(mod.Key);
+            foreach (AllowedModifiers mod in Enum.GetValues(typeof(AllowedModifiers)))
+                Modifiers[mod] = mods.Contains(mod);
+        }
+
+        internal void SerializeModifiers()
+        {
+            _Modifiers.Value = SerializeModifiers(Modifiers.Where(x => x.Value).Select(x => x.Key));
         }
 
         internal bool IsDown()
@@ -190,13 +201,13 @@ namespace MoreQuickSlotsBepInEx.Config
 
         private bool ModifierKeyTest()
         {
-            foreach (Modifier mod in Modifiers.Values)
+            foreach (KeyValuePair<AllowedModifiers, bool> mod in GetModifiers)
             {
-                if (mod.Enabled && mod.Keys.All((c) => !UnityInput.Current.GetKey(c)))
+                if (mod.Value && ModifierLookup[mod.Key].All((c) => !UnityInput.Current.GetKey(c)))
                 {
                     return false;
                 }
-                else if (!mod.Enabled && mod.Keys.Any((c) => UnityInput.Current.GetKey(c)))
+                else if (!mod.Value && ModifierLookup[mod.Key].Any((c) => UnityInput.Current.GetKey(c)))
                 {
                     return false;
                 }

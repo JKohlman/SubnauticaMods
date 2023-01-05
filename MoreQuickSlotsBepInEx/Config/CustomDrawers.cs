@@ -8,7 +8,11 @@ namespace MoreQuickSlotsBepInEx.Config
 {
     internal class CustomDrawers
     {
-        readonly private Dictionary<CustomKeyboardShortcut.AllowedModifiers, bool> _toggleStates = new Dictionary<CustomKeyboardShortcut.AllowedModifiers, bool>();
+        readonly private Dictionary<CustomKeyboardShortcut.AllowedModifiers, bool> _toggleStates = 
+            Enum.GetValues(typeof(CustomKeyboardShortcut.AllowedModifiers))
+            .Cast<CustomKeyboardShortcut.AllowedModifiers>()
+            .ToDictionary(key => key, _ => false);
+
         internal void HotkeyModifiersDrawer(ConfigEntryBase entry)
         {
             string setting = (string)entry.BoxedValue;
@@ -17,8 +21,6 @@ namespace MoreQuickSlotsBepInEx.Config
             bool isDirty = false;
             foreach (CustomKeyboardShortcut.AllowedModifiers modifier in Enum.GetValues(typeof(CustomKeyboardShortcut.AllowedModifiers)))
             {
-                if (!_toggleStates.ContainsKey(modifier))
-                    _toggleStates[modifier] = false;
                 if (GUILayout.Toggle(modifiers.Contains(modifier), modifier.ToString()) != _toggleStates[modifier])
                 {
                     _toggleStates[modifier] = !_toggleStates[modifier];

@@ -29,8 +29,7 @@ namespace MoreQuickSlotsBepInEx.Config
                 "Extra Slots",
                 4,
                 new ConfigDescription(
-                    "How many extra slots to add",
-                    new AcceptableValueRange<int>(0, MAX_EXTRA_SLOTS)
+                    "How many extra slots to add"
                 )
             );
             ExtraSlots.SettingChanged += (object sender, EventArgs e) => { QuickSlots_Patch.ReDrawSlots(); };

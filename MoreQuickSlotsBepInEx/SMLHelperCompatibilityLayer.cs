@@ -21,6 +21,7 @@ namespace MoreQuickSlotsBepInEx
         private static void SMLPresentInitialize()
         {
             OptionsPanelHandler.RegisterModOptions(new SMLConfig());
+            OptionsPanelHandler.RegisterModOptions<SMLConfigAttributed>();
         }
     }
 }

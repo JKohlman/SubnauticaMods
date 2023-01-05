@@ -1,5 +1,8 @@
 ﻿using SMLHelper.Options;
 using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 using static MoreQuickSlotsBepInEx.Config.CustomKeyboardShortcut;
 
 namespace MoreQuickSlotsBepInEx.Config
@@ -13,13 +16,17 @@ namespace MoreQuickSlotsBepInEx.Config
 
         public override void BuildModOptions()
         {
-            AddOption(ModToggleOption.Factory("DAATQS", "Disable Auto-Bind", BepInExConfig.DAATQS.Value));
-            AddOption(ModSliderOption.Factory("Extra Slots", "Extra Slots", 0, 15, BepInExConfig.ExtraSlots.Value, 4, "{0}", 1));
+            MoreQuickSlotsBepInEx.logger.LogInfo("BUILDING MOD OPTIONS");
+            AddItem(ModToggleOption.Factory("DAATQS", "Disable Auto-Bind", BepInExConfig.DAATQS.Value));
+            AddItem(ModSliderOption.Factory("Extra Slots", "Extra Slots", 0, 15, BepInExConfig.ExtraSlots.Value, 4, "{0}", 1));
 
             for (int i = 0; i < BepInExConfig.MAX_EXTRA_SLOTS; i++)
             {
-                AddOption(ModChoiceOption.Factory("ExtraHotkey" + i.ToString().PadLeft(2, '0'), "Quickslot " + (i + 6) + " Hotkey", (AllowedKeys)BepInExConfig.SlotHotkeys[i].MainKey));
+                AddItem(ModChoiceOption.Factory("ExtraHotkey" + i.ToString().PadLeft(2, '0'), "Quickslot " + (i + 6) + " Hotkey", (AllowedKeys)BepInExConfig.SlotHotkeys[i].MainKey));
+                AddItem(CustomKeyBoardModifiersOption.Factory($"ExtraHotkey {i.ToString().PadLeft(2, '0')}MOD", $"Quickslot {(i + 6)} Modifiers", BepInExConfig.SlotHotkeys[i]));
             }
+            AddItem(ModButtonOption.Factory("Button_1", "Factory Button", (ButtonClickedEventArgs e) => MoreQuickSlotsBepInEx.logger.LogInfo("Factory Button Clicked")));
+            AddItem(ModColorOption.Factory("Color_1", "Test Color", Color.white));
         }
 
         private void Options_Changed(object sender, EventArgs e)
@@ -49,33 +56,75 @@ namespace MoreQuickSlotsBepInEx.Config
                         BepInExConfig.SlotHotkeys[hotkeyNumber]._MainKey.Value = (AllowedKeys)Enum.Parse(typeof(AllowedKeys), args.Value.Value);
                     }
                     break;
+                case ColorChangedEventArgs args:
+                    MoreQuickSlotsBepInEx.logger.LogInfo($"Changed color to {args.Value}");
+                    break;
             }
         }
     }
 
-    //internal class CustomOption<T> : ModOption
-    //{
-    //    public T Value { get; }
-    //    public T DefaultValue { get; }
+    internal class CustomKeyBoardModifiersEventArgs : ConfigOptionEventArgs<string>
+    {
+        internal CustomKeyBoardModifiersEventArgs(string id, string values) : base(id, values) { }
+    }
 
-    //    public override void AddToPanel(uGUI_TabbedControlsPanel panel, int tabIndex)
-    //    {
-    //        var option = panel.AddCustomOption(); // TODO: Replace with actual code
-    //        OptionGameObject = option.transform.parent.gameObject;
-    //        base.AddToPanel(panel, tabIndex);
-    //    }
+    internal class CustomKeyBoardModifiersOption : ModOption<string>
+    {
+        private readonly CustomKeyboardShortcut _BackingField;
 
-    //    public CustomOption(string id, string label, T value) : base(label, id)
-    //    {
-    //        this.Value = value;
-    //    }
+        public override void AddToPanel(uGUI_TabbedControlsPanel panel, int tabIndex)
+        {
+            Canvas canvas = new GameObject("Canvas", typeof(RectTransform)).AddComponent<Canvas>();
 
+            GameObject gameObject = panel.AddItem(tabIndex, panel.toggleOptionPrefab, Label);
+            Toggle toggle = gameObject.EnsureComponent<Toggle>();
+            toggle.isOn = true;
+            TextMeshProUGUI text = gameObject.EnsureComponent<TextMeshProUGUI>();
+            text.text = "Test";
 
-    //    public override Type AdjusterComponent => typeof(CustomOption<T>.CustomOptionAdjust);
+            //return componentInChildren1;
+            //var modifiers = _BackingField.GetModifiers; // Fetch to consolidate string value with modifiers value
+            //foreach (AllowedModifiers modifier in Enum.GetValues(typeof(AllowedModifiers)))
+            //{
+            //    UnityEngine.UI.Toggle toggle = panel.AddToggleOption(tabIndex, modifier.ToString(), modifiers[modifier],
+            //        new UnityAction<bool>((bool value) =>
+            //        {
+            //            _BackingField.SetModifier(modifier, value);
+            //        }));
+            //}
+            panel.AddItem(tabIndex, canvas.gameObject, Label);
+        }
 
-    //    private class CustomOptionAdjust : ModOption.ModOptionAdjust
-    //    {
+        private CustomKeyBoardModifiersOption(string id, string label, CustomKeyboardShortcut shortcut) : base(id, label, shortcut.ModifiersString)
+        {
+            _BackingField = shortcut;
+        }
 
-    //    }
-    //}
+        public static CustomKeyBoardModifiersOption Factory(string id, string label, CustomKeyboardShortcut shortcut)
+        {
+            return new CustomKeyBoardModifiersOption(id, label, shortcut);
+        }
+
+        //private class CustomKeyBoardModifiersOptionAdjust : ModOptionAdjust
+        //{
+        //    private const float spacing = 20f;
+
+        //    public IEnumerator Start()
+        //    {
+        //        SetCaptionGameObject("Toggle/Caption");
+        //        yield return null;
+
+        //        Transform check = gameObject.transform.Find("Toggle/Background");
+
+        //        if (CaptionWidth + spacing > check.localPosition.x)
+        //        {
+        //            check.localPosition = SetVec2x(check.localPosition, CaptionWidth + spacing);
+        //        }
+
+        //        Destroy(this);
+        //    }
+        //}
+        public override Type AdjusterComponent => null;
+
+    }
 }
