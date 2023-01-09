@@ -1,6 +1,7 @@
 ﻿using SMLHelper.Json;
 using SMLHelper.Options;
 using SMLHelper.Options.Attributes;
+using System;
 using UnityEngine;
 
 namespace MoreQuickSlotsBepInEx.Config
@@ -15,6 +16,16 @@ namespace MoreQuickSlotsBepInEx.Config
         }
 
         [ColorPicker(Id="Color_Id", Label = "My Color Attribute")]
+        [OnChange(nameof(MyGenericOnChangeEvent))]
         public Color myColor;
+
+        [Toggle("123")]
+        [OnChange(nameof(MyGenericOnChangeEvent))]
+        public bool MyCheckbox = true;
+
+        public static void MyGenericOnChangeEvent(object sender, EventArgs e)
+        {
+            MoreQuickSlotsBepInEx.logger.LogDebug($"GOT CALLBACK IN ONCHANGE");
+        }
     }
 }

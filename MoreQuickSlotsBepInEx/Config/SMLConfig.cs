@@ -27,6 +27,9 @@ namespace MoreQuickSlotsBepInEx.Config
             }
             AddItem(ModButtonOption.Factory("Button_1", "Factory Button", (ButtonClickedEventArgs e) => MoreQuickSlotsBepInEx.logger.LogInfo("Factory Button Clicked")));
             AddItem(ModColorOption.Factory("Color_1", "Test Color", Color.white));
+
+            AddItem(ModSliderOption.Factory("ID1", "Default of value", 0, 10, 5));
+            AddItem(ModSliderOption.Factory("ID2", "Default of 3", 0, 10, 5, 3, "{0:F0}", 2));
         }
 
         private void Options_Changed(object sender, EventArgs e)
