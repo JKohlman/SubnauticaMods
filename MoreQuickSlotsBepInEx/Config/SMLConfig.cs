@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 using static MoreQuickSlotsBepInEx.Config.CustomKeyboardShortcut;
 
 namespace MoreQuickSlotsBepInEx.Config
@@ -12,24 +13,21 @@ namespace MoreQuickSlotsBepInEx.Config
         public SMLConfig() : base("More Quick Slots (BepInEx)")
         {
             OnChanged += Options_Changed;
-        }
 
-        public override void BuildModOptions()
-        {
             MoreQuickSlotsBepInEx.logger.LogInfo("BUILDING MOD OPTIONS");
-            AddItem(ModToggleOption.Factory("DAATQS", "Disable Auto-Bind", BepInExConfig.DAATQS.Value));
-            AddItem(ModSliderOption.Factory("Extra Slots", "Extra Slots", 0, 15, BepInExConfig.ExtraSlots.Value, 4, "{0}", 1));
+            AddItem(ModToggleOption.Create("DAATQS", "Disable Auto-Bind", BepInExConfig.DAATQS.Value));
+            AddItem(ModSliderOption.Create("Extra Slots", "Extra Slots", 0, 15, BepInExConfig.ExtraSlots.Value, 4, "{0}", 1));
 
             for (int i = 0; i < BepInExConfig.MAX_EXTRA_SLOTS; i++)
             {
-                AddItem(ModChoiceOption.Factory("ExtraHotkey" + i.ToString().PadLeft(2, '0'), "Quickslot " + (i + 6) + " Hotkey", (AllowedKeys)BepInExConfig.SlotHotkeys[i].MainKey));
-                AddItem(CustomKeyBoardModifiersOption.Factory($"ExtraHotkey {i.ToString().PadLeft(2, '0')}MOD", $"Quickslot {(i + 6)} Modifiers", BepInExConfig.SlotHotkeys[i]));
+                AddItem(ModChoiceOption<AllowedKeys>.Create("ExtraHotkey" + i.ToString().PadLeft(2, '0'), "Quickslot " + (i + 6) + " Hotkey", Enum.GetValues(typeof(AllowedKeys)).Cast<AllowedKeys>().ToArray(), (AllowedKeys)BepInExConfig.SlotHotkeys[i].MainKey));
+                AddItem(CustomKeyBoardModifiersOption.Create($"ExtraHotkey {i.ToString().PadLeft(2, '0')}MOD", $"Quickslot {(i + 6)} Modifiers", BepInExConfig.SlotHotkeys[i]));
             }
-            AddItem(ModButtonOption.Factory("Button_1", "Factory Button", (ButtonClickedEventArgs e) => MoreQuickSlotsBepInEx.logger.LogInfo("Factory Button Clicked")));
-            AddItem(ModColorOption.Factory("Color_1", "Test Color", Color.white));
+            AddItem(ModButtonOption.Create("Button_1", "Factory Button", (ButtonClickedEventArgs e) => MoreQuickSlotsBepInEx.logger.LogInfo("Factory Button Clicked")));
+            AddItem(ModBasicColorOption.Create("Color_1", "Test Color", Color.white));
 
-            AddItem(ModSliderOption.Factory("ID1", "Default of value", 0, 10, 5));
-            AddItem(ModSliderOption.Factory("ID2", "Default of 3", 0, 10, 5, 3, "{0:F0}", 2));
+            AddItem(ModColorOption.Create("Color_2", "Test Advanced Color", Color.white));
+            AddItem(ModToggleOption.Create("After Color", "BLEH", false));
         }
 
         private void Options_Changed(object sender, EventArgs e)
@@ -52,11 +50,11 @@ namespace MoreQuickSlotsBepInEx.Config
                             break;
                     }
                     break;
-                case ChoiceChangedEventArgs args:
+                case ChoiceChangedEventArgs<AllowedKeys> args:
                     if (args.Id.StartsWith("ExtraHotkey"))
                     {
                         int hotkeyNumber = int.Parse(args.Id.Substring(args.Id.Length - 2));
-                        BepInExConfig.SlotHotkeys[hotkeyNumber]._MainKey.Value = (AllowedKeys)Enum.Parse(typeof(AllowedKeys), args.Value.Value);
+                        BepInExConfig.SlotHotkeys[hotkeyNumber]._MainKey.Value = args.Value;
                     }
                     break;
                 case ColorChangedEventArgs args:
@@ -71,7 +69,7 @@ namespace MoreQuickSlotsBepInEx.Config
         internal CustomKeyBoardModifiersEventArgs(string id, string values) : base(id, values) { }
     }
 
-    internal class CustomKeyBoardModifiersOption : ModOption<string>
+    internal class CustomKeyBoardModifiersOption : ModOption<string, CustomKeyBoardModifiersEventArgs>
     {
         private readonly CustomKeyboardShortcut _BackingField;
 
@@ -103,7 +101,7 @@ namespace MoreQuickSlotsBepInEx.Config
             _BackingField = shortcut;
         }
 
-        public static CustomKeyBoardModifiersOption Factory(string id, string label, CustomKeyboardShortcut shortcut)
+        public static CustomKeyBoardModifiersOption Create(string id, string label, CustomKeyboardShortcut shortcut)
         {
             return new CustomKeyBoardModifiersOption(id, label, shortcut);
         }
