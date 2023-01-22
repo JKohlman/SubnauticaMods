@@ -24,10 +24,12 @@ namespace MoreQuickSlotsBepInEx.Config
                 AddItem(CustomKeyBoardModifiersOption.Create($"ExtraHotkey {i.ToString().PadLeft(2, '0')}MOD", $"Quickslot {(i + 6)} Modifiers", BepInExConfig.SlotHotkeys[i]));
             }
             AddItem(ModButtonOption.Create("Button_1", "Factory Button", (ButtonClickedEventArgs e) => MoreQuickSlotsBepInEx.logger.LogInfo("Factory Button Clicked")));
-            AddItem(ModBasicColorOption.Create("Color_1", "Test Color", Color.white));
+            
+            
+            AddItem(ModColorOption.Create("Color_1", "Test Color", Color.white));
 
-            AddItem(ModColorOption.Create("Color_2", "Test Advanced Color", Color.white));
-            AddItem(ModToggleOption.Create("After Color", "BLEH", false));
+            AddItem(ModColorOption.Create("Color_2", "Test Advanced Color", Color.white, true));
+            //AddItem(ModToggleOption.Create("After Color", "BLEH", false));
         }
 
         private void Options_Changed(object sender, EventArgs e)

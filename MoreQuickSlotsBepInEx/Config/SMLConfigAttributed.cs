@@ -7,7 +7,7 @@ using UnityEngine;
 namespace MoreQuickSlotsBepInEx.Config
 {
     [Menu("More Quick Slots (BepInEx) Extended")]
-    public class SMLConfigAttributed : ConfigFile
+    internal class SMLConfigAttributed : ConfigFile
     {
         [Button(Id = "Button_2", Label = "Attribute Button", Tooltip = "Attribute Tooltip")]
         public void MyCallback(ButtonClickedEventArgs e)
@@ -15,9 +15,13 @@ namespace MoreQuickSlotsBepInEx.Config
             MoreQuickSlotsBepInEx.logger.LogInfo($"{e.Id} (Attribute Button) clicked");
         }
 
-        [ColorPicker(Id="Color_Id", Label = "My Color Attribute")]
+        [ColorPicker(Id="Color_Id", Label = "Color Attribute")]
         [OnChange(nameof(MyGenericOnChangeEvent))]
         public Color myColor;
+
+        [ColorPicker(Id = "Color_Id_2", Label = "Color Attribute 2", Advanced = true)]
+        [OnChange(nameof(MyGenericOnChangeEvent))]
+        public Color myColor2 = Color.white;
 
         [Toggle("123")]
         [OnChange(nameof(MyGenericOnChangeEvent))]
