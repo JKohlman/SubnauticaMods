@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <Version>1.0.0</Version>
+        <Configurations>BZ Publish;BZ Release;SN Release;SN Publish</Configurations>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="$(Configuration.Contains('SN'))">
+        <GamePath>C:\Games\Subnautica</GamePath>
+        <GameShorthand>SN</GameShorthand>
+        <DefineConstants>SN</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('BZ'))">
+        <GamePath>C:\Steam Games\steamapps\common\SubnauticaZero</GamePath>
+        <GameShorthand>BZ</GameShorthand>
+        <DefineConstants>BZ</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup Condition="$(Configuration.Contains('SN'))">
+        <PackageReference Include="Subnautica.GameLibs" Version="71137.0.0.1-r.0" />
+    </ItemGroup>
+    <ItemGroup Condition="$(Configuration.Contains('BZ'))">
+        <PackageReference Include="Subnautica.BelowZero.GameLibs" Version="71288.0.0-r.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+        <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" />
+    </ItemGroup>
+    
+    <Target Name="Copy" AfterTargets="Build" Condition="'$(GamePath)' != ''">
+        <Message Importance="high" Text="Copying output to $(GamePath)\BepInEx\plugins\$(TargetFileName)" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GamePath)/BepInEx/plugins/"></Copy>
+    </Target>
+
+    <Target Name="PostBuildPublish" AfterTargets="Build" Condition="'$(GamePath)' != '' and $(Configuration.Contains('Publish'))">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="output\plugins\$(ProjectName)\" />
+        <Copy SourceFiles="$(ProjectDir)\README.md" DestinationFolder="output\plugins\$(ProjectName)\" />
+    </Target>
+
+    <Target Name="PublishZip" AfterTargets="PostBuildPublish" Condition="'$(GamePath)' != '' and $(Configuration.Contains('Publish'))">
+        <Delete Files="./output/$(ProjectName).zip" />
+        <Exec Command="7z a ./output/$(ProjectName)-$(GameShorthand).zip ./output/*" />
+    </Target>
+
+    <Target Name="MyClean" AfterTargets="Clean" BeforeTargets="PostBuildPublish">
+        <Message Importance="high" Text="Cleaning" />
+        <RemoveDir Directories="output" />
+    </Target>
+</Project>

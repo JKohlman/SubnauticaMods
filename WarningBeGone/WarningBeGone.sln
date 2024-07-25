@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarningBeGone", "WarningBeGone.csproj", "{340F3503-9725-4D8E-9188-83C94C5529A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		BZ Publish|Any CPU = BZ Publish|Any CPU
+		BZ Release|Any CPU = BZ Release|Any CPU
+		SN Publish|Any CPU = SN Publish|Any CPU
+		SN Release|Any CPU = SN Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.BZ Publish|Any CPU.ActiveCfg = BZ Publish|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.BZ Publish|Any CPU.Build.0 = BZ Publish|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.BZ Release|Any CPU.ActiveCfg = BZ Release|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.BZ Release|Any CPU.Build.0 = BZ Release|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.SN Publish|Any CPU.ActiveCfg = SN Publish|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.SN Publish|Any CPU.Build.0 = SN Publish|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.SN Release|Any CPU.ActiveCfg = SN Release|Any CPU
+		{340F3503-9725-4D8E-9188-83C94C5529A4}.SN Release|Any CPU.Build.0 = SN Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69A7AF6C-AEAE-4B81-9EE2-FBD41FAD97BE}
+	EndGlobalSection
+EndGlobal
